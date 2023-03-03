@@ -1,7 +1,7 @@
 {
-  "name": "structure-api-mvc-express-nodejs",
+  "name": "backend-food-review",
   "version": "1.0.0",
-  "description": "structure api mvc express nodejs",
+  "description": "restful api for food review app",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -11,7 +11,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "anonystick <anonystick@gmail.com>",
+  "author": "khangnguyen",
   "license": "ISC",
   "dependencies": {
     "compression": "^1.7.4",
