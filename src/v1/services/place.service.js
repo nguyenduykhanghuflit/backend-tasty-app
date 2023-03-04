@@ -1,10 +1,26 @@
+const db = require('../databases/models');
+const { Op } = require('sequelize');
 class PlaceService {
   getAllPlace() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        resolve({ data: 'ok place service' });
+        const response = await db.Place.findAndCountAll({
+          raw: true,
+          nest: true,
+          include: [
+            {
+              model: db.User,
+              as: 'user',
+              attributes: ['fullname', 'username'],
+            },
+          ],
+        });
+        return resolve({
+          msg: response ? 'OK' : 'Place empty',
+          response,
+        });
       } catch (error) {
-        reject(error);
+        return reject(error);
       }
     });
   }

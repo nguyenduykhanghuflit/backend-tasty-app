@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 
 //init db
-const databaseLoad = require('./v1/databases/init.mysql');
-databaseLoad();
+const connectDatabase = require('./v1/databases/config/connectDatabase');
+connectDatabase();
 
 const helmet = require('helmet');
 app.use(helmet());

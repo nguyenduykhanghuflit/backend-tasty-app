@@ -5,7 +5,6 @@ const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   dialect: 'mysql',
-
   pool: {
     max: 5,
     min: 0,
@@ -16,11 +15,7 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     underscored: true,
     freezeTableName: true,
   },
-
-  benchmark: false,
-  logger: false,
-  //   logging: (sql, timingMs) =>
-  //     logger.info(`${sql} - [Execution time: ${timingMs}ms]`),
+  logging: false,
 });
 
 const connectDB = async () => {
