@@ -1,16 +1,18 @@
 const placeService = require('../services/place.service');
+const { success, throwError } = require('../utils/response');
 
 class PlaceController {
-  async getPlace(req, res) {
+  async getPlace(req, res, next) {
     try {
       const data = await placeService.getAllPlace();
-      return res.status(200).json(data);
-    } catch (error) {
-      return res.status(500).json({
-        err: true,
-        msg: 'Failed at place controller: ' + error,
-      });
+      return success(res, 200, data);
+    } catch (ex) {
+      const msg = 'Failed at place controller: ' + ex;
+      return throwError(msg, 500, next);
     }
   }
+
+  //get place detail + post
+  //create place
 }
 module.exports = new PlaceController();

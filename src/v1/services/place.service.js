@@ -4,7 +4,7 @@ class PlaceService {
   getAllPlace() {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await db.Place.findAndCountAll({
+        const response = await db.Place.findAll({
           raw: true,
           nest: true,
           include: [
