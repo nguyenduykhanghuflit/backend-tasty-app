@@ -2,7 +2,18 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Media extends Model {
-    static associate(models) {}
+    static associate(models) {
+      Media.belongsTo(models.User, {
+        foreignKey: 'typeId',
+        targetKey: 'userId',
+        as: 'UserMedia',
+      });
+      Media.belongsTo(models.Place, {
+        foreignKey: 'typeId',
+        targetKey: 'placeId',
+        as: 'PlaceMedia',
+      });
+    }
   }
   Media.init(
     {

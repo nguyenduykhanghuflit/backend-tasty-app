@@ -1,4 +1,5 @@
 const userService = require('../services/user.service');
+const mediaService = require('../services/media.service');
 const { success, throwError } = require('../utils/response');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -21,6 +22,10 @@ class UserController {
     try {
       const userId = req.userId;
       const data = await userService.getUserInfo(userId);
+      // const media = await mediaService.getMedia('avatar', userId);
+      // if (media) {
+      //   data.response.media = media?.response;
+      // }
       return success(res, 200, data);
     } catch (ex) {
       const msg = 'Failed at getUserInfo controller: ' + ex;

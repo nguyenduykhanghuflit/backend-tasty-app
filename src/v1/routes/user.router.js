@@ -3,7 +3,6 @@ const router = app.Router();
 const UserController = require('../controller/user.controller');
 const AuthMiddleware = require('../middleware/auth');
 
-//*todo later: chưa gắn middlewares
 router.post(
   '/get-info-user',
   AuthMiddleware.Logged,

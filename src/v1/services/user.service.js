@@ -9,9 +9,31 @@ class UserService {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await db.User.findAll({
-          raw: true,
+          raw: false, //gộp lại k tách ra
           nest: true,
+          include: [
+            {
+              model: db.Place,
+              as: 'UserPlace',
+              plain: true,
+              include: [
+                {
+                  model: db.Media,
+                  as: 'PlaceMedia',
+                  where: { type: 'place' },
+                  plain: true,
+                },
+              ],
+            },
+            {
+              model: db.Media,
+              as: 'UserMedia',
+              where: { type: 'avatar' },
+              plain: true,
+            },
+          ],
         });
+
         return resolve({
           msg: response ? 'OK' : 'User empty',
           response,
@@ -27,9 +49,22 @@ class UserService {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await db.User.findOne({
-          raw: true,
+          raw: false,
           nest: true,
           where: { userId },
+          include: [
+            {
+              model: db.Place,
+              as: 'UserPlace',
+              plain: true,
+            },
+            {
+              model: db.Media,
+              as: 'UserMedia',
+              where: { type: 'avatar' },
+              plain: true,
+            },
+          ],
         });
         return resolve({
           msg: response ? 'OK' : 'User invalid',

@@ -2,46 +2,41 @@ const app = require('express');
 const multer = require('multer');
 const router = app.Router();
 const db = require('../databases/models');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'src/v1/public/'); // thư mục lưu trữ tệp được tải lên
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); // tên tệp sẽ được lưu trữ trên máy chủ
-  },
-});
+const { success, throwError } = require('../utils/response');
+const { upload } = require('../utils/upload');
 
-const upload = multer({ storage: storage }).array('image', 20);
-
-const abc = async (req, res, next) => {
-  const type = req.query;
-  if (!type) return res.status(400).json('Missing type');
-  return next();
+const TYPE = {
+  avatar: 'avatar',
+  place: 'place',
+  post: 'post',
 };
+router.post('/upload', (req, res, next) => {
+  const { type, typeId } = req.query;
+  if (!type || !TYPE[type] || !typeId)
+    return throwError('Missing type', 400, next);
 
-router.post('/upload', (req, res) => {
-  const type = req.query.type;
-  if (!type) return res.status(400).json('Missing type');
-
-  upload(req, res, async function (err) {
+  upload(req, res, async (err) => {
     if (err instanceof multer.MulterError) {
       // lỗi khi tải lên tệp
-      return res.status(500).json(err);
+      return throwError('Upload fail', 500, next);
     } else if (err) {
-      return res.status(500).json(err);
-    }
+      //loi khac
+      return throwError('Upload fail', 500, next);
+    } else {
+      const files = req.files.map((file) => {
+        return {
+          url: `/static/${file.filename}`,
+          type: TYPE[type],
+          typeId,
+        };
+      });
 
-    // tạo một mảng các đối tượng File dựa trên các tệp đã tải lên
-    const files = req.files.map((file) => {
-      return {
-        url: file.path,
-        type: 'avt',
-        typeId: 3,
-      };
-    });
-    // res.status(200).json(files);
-    // // lưu thông tin về các tệp vào cơ sở dữ liệu
-    await db.Media.bulkCreate(files).then(() => res.status(200).json(files));
+      //lưu thông tin về các tệp vào cơ sở dữ liệu
+
+      await db.Media.bulkCreate(files)
+        .then(() => success(res, 200, files))
+        .catch((err) => throwError(`Update database fail: ${err}`, 500, next));
+    }
   });
 });
 

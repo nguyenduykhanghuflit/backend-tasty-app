@@ -7,6 +7,7 @@ class AuthMiddleware {
       const accesstoken = req.headers?.authorization?.split(' ')[1];
       if (!accesstoken) return throwError('Token invalid', 401, next);
       const decodedToken = jwt.verify(accesstoken, ACCESS_TOKEN_SECRET);
+
       req.userId = decodedToken.userId;
       next();
     } catch (ex) {

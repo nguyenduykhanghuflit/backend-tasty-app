@@ -29,8 +29,8 @@ app.use(
     extended: true,
   })
 );
-
-// app.use('/static/', express.static(path.join(__dirname, '/v1/public')));
+const path = require('path');
+app.use('/static/', express.static(path.join(__dirname, './v1/public/')));
 
 //router
 const initRouter = require('./v1/routes/index.router');

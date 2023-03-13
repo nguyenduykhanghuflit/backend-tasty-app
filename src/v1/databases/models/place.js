@@ -6,7 +6,12 @@ module.exports = (sequelize, DataTypes) => {
       Place.belongsTo(models.User, {
         foreignKey: 'userId',
         targetKey: 'userId',
-        as: 'user',
+        as: 'UserPlace',
+      });
+      Place.hasMany(models.Media, {
+        foreignKey: 'typeId',
+        targetKey: 'placeId',
+        as: 'PlaceMedia',
       });
     }
   }
