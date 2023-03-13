@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'placeId',
         as: 'PlaceMedia',
       });
+      Media.belongsTo(models.Post, {
+        foreignKey: 'typeId',
+        targetKey: 'postId',
+        as: 'PostMedia',
+      });
     }
   }
   Media.init(

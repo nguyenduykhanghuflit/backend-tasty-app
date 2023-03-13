@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'placeId',
         as: 'PlaceMedia',
       });
+      Place.hasMany(models.Post, {
+        foreignKey: 'placeId',
+        targetKey: 'placeId',
+        as: 'PlacePost',
+      });
     }
   }
   Place.init(
@@ -31,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      discription: {
+      description: {
         allowNull: false,
         type: DataTypes.STRING,
       },

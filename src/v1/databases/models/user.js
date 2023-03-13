@@ -9,6 +9,16 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: 'userId',
         as: 'UserMedia',
       });
+      User.hasMany(models.Post, {
+        foreignKey: 'userId',
+        targetKey: 'userId',
+        as: 'UserPost',
+      });
+      User.hasMany(models.Comment, {
+        foreignKey: 'userId',
+        targetKey: 'userId',
+        as: 'UserComment',
+      });
     }
   }
   User.init(
