@@ -1,14 +1,29 @@
 const placeService = require('../services/place.service');
 const mediaService = require('../services/media.service');
 const { success, throwError } = require('../utils/response');
-const { MEDIA_TYPE } = require('../utils/const');
+const { MEDIA_TYPE, CATALOG } = require('../utils/const');
 const { upload } = require('../utils/upload');
 const multer = require('multer');
 class PlaceController {
   async getPlace(req, res, next) {
     try {
-      const data = await placeService.getAllPlace();
+      const { placeId, category, search } = req.query;
+      let data;
+      if (placeId) {
+        data = await placeService.getPlaceDetail(placeId);
+      } else if (category) {
+        data = await placeService.getPlaceByCatalog(category);
+      } else data = await placeService.getAllPlace();
 
+      if (search && !placeId) {
+        data = data?.response?.filter((item) => {
+          const placeName = item.placeName.toLowerCase();
+          const fullAddress = item.fullAddress.toLowerCase();
+          const keyword = search.toLowerCase();
+
+          return placeName.includes(keyword) || fullAddress.includes(keyword);
+        });
+      }
       return success(res, 200, data);
     } catch (ex) {
       const msg = 'Failed at place controller: ' + ex;
@@ -47,6 +62,8 @@ class PlaceController {
             next
           );
         }
+        const { category } = info;
+        if (!CATALOG[category]) return throwError('Catalog invalid', 400, next);
 
         const { response, msg } = await placeService.createPlace({
           ...info,
@@ -87,7 +104,6 @@ class PlaceController {
     }
   }
 
-  //create place
-  //get place detail + post
+  //get place detail + media +user
 }
 module.exports = new PlaceController();

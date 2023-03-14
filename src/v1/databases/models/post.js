@@ -56,7 +56,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       like: {
         allowNull: false,
+        defaultValue: 0,
         type: DataTypes.INTEGER,
+      },
+      catalog: {
+        allowNull: false,
+        type: DataTypes.STRING,
       },
     },
     {

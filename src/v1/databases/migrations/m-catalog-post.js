@@ -30,6 +30,11 @@ module.exports = {
         default: 0,
         type: Sequelize.INTEGER,
       },
+      catalog: {
+        allowNull: true,
+
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
