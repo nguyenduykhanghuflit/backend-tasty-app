@@ -4,6 +4,7 @@ const { success, throwError } = require('../utils/response');
 const { MEDIA_TYPE, CATALOG } = require('../utils/const');
 const { upload } = require('../utils/upload');
 const multer = require('multer');
+const unidecode = require('unidecode');
 class PlaceController {
   async getPlace(req, res, next) {
     try {
@@ -17,10 +18,9 @@ class PlaceController {
 
       if (search && !placeId) {
         data = data?.response?.filter((item) => {
-          const placeName = item.placeName.toLowerCase();
-          const fullAddress = item.fullAddress.toLowerCase();
-          const keyword = search.toLowerCase();
-
+          const placeName = unidecode(item.placeName.toLowerCase());
+          const fullAddress = unidecode(item.fullAddress.toLowerCase());
+          const keyword = unidecode(search.toLowerCase());
           return placeName.includes(keyword) || fullAddress.includes(keyword);
         });
       }

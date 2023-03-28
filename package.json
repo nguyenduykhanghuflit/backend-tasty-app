@@ -42,6 +42,7 @@
     "request-promise": "^4.2.6",
     "sequelize-typescript": "^2.1.5",
     "tedious": "^15.1.2",
+    "unidecode": "^0.1.8",
     "winston": "^3.7.2"
   }
 }

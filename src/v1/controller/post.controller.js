@@ -18,9 +18,8 @@ class PostController {
 
       if (search && !postId) {
         data = data?.response?.filter((item) => {
-          const content = item.content.toLowerCase();
           const keyword = search.toLowerCase();
-
+          const content = unidecode(item.content.toLowerCase());
           return content.includes(keyword);
         });
       }
