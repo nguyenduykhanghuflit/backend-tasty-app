@@ -15,10 +15,11 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "a96e2a_mydb",
+    "password": "@Khang123",
+    "database": "db_a96e2a_mydb",
+    "host": "MYSQL5045.site4now.net",
+    "dialect": "mysql",
+    "logging": false
   }
 }
