@@ -5,6 +5,8 @@ const { success, throwError } = require('../utils/response');
 const { MEDIA_TYPE, CATALOG } = require('../utils/const');
 const { upload } = require('../utils/upload');
 const multer = require('multer');
+const unidecode = require('unidecode');
+
 class PostController {
   async getPost(req, res, next) {
     try {
@@ -18,10 +20,15 @@ class PostController {
 
       if (search && !postId) {
         data = data?.response?.filter((item) => {
-          const keyword = search.toLowerCase();
+          const keyword = unidecode(search.toLowerCase());
           const content = unidecode(item.content.toLowerCase());
           return content.includes(keyword);
         });
+
+        data = {
+          msg: 'Ok',
+          response: data,
+        };
       }
       return success(res, 200, data);
     } catch (ex) {
@@ -42,7 +49,13 @@ class PostController {
 
         const info = { ...req.body, userId };
 
-        const requiredFields = ['userId', 'placeId', 'content', 'star'];
+        const requiredFields = [
+          'userId',
+          'placeId',
+          'content',
+          'title',
+          'star',
+        ];
         const missingFields = requiredFields.filter((field) => !info[field]);
         if (missingFields.length > 0) {
           return throwError(
@@ -57,8 +70,8 @@ class PostController {
         const getPlace = await placeService.getPlaceDetail(info.placeId);
         if (!getPlace.response)
           return throwError('Can not find place', 400, next);
+
         const cate = getPlace.response.category;
-        console.log(getPlace.response);
         if (!cate || !CATALOG[cate])
           return throwError('Catalog invalid', 400, next);
 

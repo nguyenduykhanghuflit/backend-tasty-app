@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      title: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
       star: {
         allowNull: false,
         type: DataTypes.DOUBLE,
@@ -59,8 +63,15 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
         type: DataTypes.INTEGER,
       },
-      catalog: {
+      timeFrom: {
         allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      timeTo: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      catalog: {
         type: DataTypes.STRING,
       },
     },

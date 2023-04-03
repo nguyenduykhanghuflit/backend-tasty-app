@@ -58,6 +58,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      timeFrom: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      timeTo: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
       priceFrom: {
         allowNull: false,
         type: DataTypes.INTEGER,
@@ -71,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       category: {
-        allowNull: false,
+        defaultValue: 'eat and drink',
         type: DataTypes.STRING,
       },
     },

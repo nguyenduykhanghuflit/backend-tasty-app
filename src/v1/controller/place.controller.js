@@ -5,6 +5,7 @@ const { MEDIA_TYPE, CATALOG } = require('../utils/const');
 const { upload } = require('../utils/upload');
 const multer = require('multer');
 const unidecode = require('unidecode');
+const { isValidTime, convertToMinutes } = require('../utils/timeUtils');
 class PlaceController {
   async getPlace(req, res, next) {
     try {
@@ -23,6 +24,11 @@ class PlaceController {
           const keyword = unidecode(search.toLowerCase());
           return placeName.includes(keyword) || fullAddress.includes(keyword);
         });
+
+        data = {
+          msg: 'Ok',
+          response: data,
+        };
       }
       return success(res, 200, data);
     } catch (ex) {
@@ -48,11 +54,12 @@ class PlaceController {
           'fullAddress',
           'lat',
           'lng',
-          'time',
+          'timeFrom',
+          'timeTo',
           'priceFrom',
           'priceTo',
           'phone',
-          'category',
+          // 'category',
         ];
         const missingFields = requiredFields.filter((field) => !info[field]);
         if (missingFields.length > 0) {
@@ -62,11 +69,20 @@ class PlaceController {
             next
           );
         }
-        const { category } = info;
-        if (!CATALOG[category]) return throwError('Catalog invalid', 400, next);
+        //nếu có category nhưng category không hợp lệ
+        const { category, timeFrom, timeTo } = info;
+        if (category && !CATALOG[category])
+          return throwError('Catalog invalid', 400, next);
 
+        if (!isValidTime(timeFrom) || !isValidTime(timeTo))
+          return throwError('Time invalid', 400, next);
+
+        console.log(convertToMinutes(timeFrom));
         const { response, msg } = await placeService.createPlace({
           ...info,
+          timeFrom: convertToMinutes(timeFrom),
+          timeTo: convertToMinutes(timeTo),
+          time: `${timeFrom} - ${timeTo}`,
           userId,
         });
         if (msg !== 'OK' || !response) {
