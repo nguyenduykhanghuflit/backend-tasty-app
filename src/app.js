@@ -34,8 +34,8 @@ app.use('/static/', express.static(path.join(__dirname, './v1/public/')));
 
 //router
 const initRouter = require('./v1/routes/index.router');
-app.use('/api', initRouter);
 app.use('/', (req, res) => res.send('oke server'));
+app.use('/api', initRouter);
 
 // Error Handling Middleware
 app.use((req, res, next) => {
