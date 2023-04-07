@@ -17,7 +17,6 @@ class PostController {
         data = await postService.getPostByCatalog(catalog);
       } else data = await postService.getAllPost();
 
-      //cần tối ưu thuật toán search
       if (search && !postId) {
         data = data?.response?.filter((item) => {
           const keyword = unidecode(search.toLowerCase());
