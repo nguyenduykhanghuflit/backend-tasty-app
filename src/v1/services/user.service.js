@@ -110,7 +110,7 @@ class UserService {
           { userId: response.userId },
           ACCESS_TOKEN_SECRET,
           {
-            expiresIn: '20m',
+            expiresIn: '5000m',
           }
         );
 

@@ -54,6 +54,4 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.use('/', (req, res) => res.send('oke server'));
-
 module.exports = app;

@@ -1,12 +1,11 @@
 const placeService = require('../services/place.service');
 const mediaService = require('../services/media.service');
 const { success, throwError } = require('../utils/response');
-const { MEDIA_TYPE, CATALOG } = require('../utils/const');
-const { upload } = require('../utils/upload');
-const multer = require('multer');
+const { MEDIA_TYPE, PLACE_TYPE, isSubarray } = require('../utils/const');
 const unidecode = require('unidecode');
 const { isValidTime, convertToMinutes } = require('../utils/timeUtils');
 class PlaceController {
+  //todo later: fix filter by catalog
   async getPlace(req, res, next) {
     try {
       const { placeId, category, search } = req.query;
@@ -36,84 +35,84 @@ class PlaceController {
       return throwError(msg, 500, next);
     }
   }
-  //* Fix sau: Create place trước sau đó mới upload hình ảnh
+
+  //todo later: create post trước, upload sau
   async createPlace(req, res, next) {
     try {
+      //check login
       const userId = req.userId;
       if (!userId) return throwError('Unauthorized', 401, next);
 
-      upload(req, res, async (err) => {
-        if (err instanceof multer.MulterError || err) {
-          return throwError(`Upload fail: ${err}`, 500, next);
-        }
+      //check media
+      const imageUrls = req.imageUrls;
+      if (!imageUrls || imageUrls.length <= 0) {
+        return throwError('Server error: Can not upload media', 500, next);
+      }
 
-        const info = req.body;
-        const requiredFields = [
-          'placeName',
-          'description',
-          'fullAddress',
-          'lat',
-          'lng',
-          'timeFrom',
-          'timeTo',
-          'priceFrom',
-          'priceTo',
-          'phone',
-          // 'category',
-        ];
-        const missingFields = requiredFields.filter((field) => !info[field]);
-        if (missingFields.length > 0) {
-          return throwError(
-            `Missing data: ${missingFields.toString()}`,
-            400,
-            next
-          );
-        }
-        //nếu có category nhưng category không hợp lệ
-        const { category, timeFrom, timeTo } = info;
-        if (category && !CATALOG[category])
-          return throwError('Catalog invalid', 400, next);
-
-        if (!isValidTime(timeFrom) || !isValidTime(timeTo))
-          return throwError('Time invalid', 400, next);
-
-        console.log(convertToMinutes(timeFrom));
-        const { response, msg } = await placeService.createPlace({
-          ...info,
-          timeFrom: convertToMinutes(timeFrom),
-          timeTo: convertToMinutes(timeTo),
-          time: `${timeFrom} - ${timeTo}`,
-          userId,
-        });
-        if (msg !== 'OK' || !response) {
-          return throwError('Can not create place', 500, next);
-        }
-
-        const placeRes = response;
-        const files = req.files.filter((file) =>
-          file.mimetype.startsWith('image/')
+      //check data require
+      const info = req.body;
+      const requiredFields = [
+        'placeName',
+        'description',
+        'fullAddress',
+        'lat',
+        'lng',
+        'timeFrom',
+        'timeTo',
+        'priceFrom',
+        'priceTo',
+        'phone',
+        'category',
+      ];
+      const missingFields = requiredFields.filter((field) => !info[field]);
+      if (missingFields.length > 0) {
+        return throwError(
+          `Missing data: ${missingFields.toString()}`,
+          400,
+          next
         );
-        if (files.length <= 0) {
-          return throwError('Missing or invalid media', 400, next);
-        }
+      }
 
-        const mediaData = await mediaService.createMedia(
-          files.map((file) => ({
-            url: `/static/${file.filename}`,
-            type: MEDIA_TYPE.place,
-            typeId: placeRes.placeId || 'Lỗi',
-          }))
-        );
+      //check category and time
+      let { category, timeFrom, timeTo } = info;
+      if (!Array.isArray(category)) category = [category];
+      if (!category || !isSubarray(category, PLACE_TYPE))
+        return throwError('Catalog invalid', 400, next);
 
-        const mediaRes = mediaData?.response?.map((item) => item.dataValues);
-        if (!mediaRes?.length) {
-          return throwError('Can not create media', 500, next);
-        }
+      if (!isValidTime(timeFrom) || !isValidTime(timeTo))
+        return throwError('Time invalid', 400, next);
 
-        return success(res, 200, {
-          place: { ...placeRes, media: mediaRes },
-        });
+      const jsonCate = JSON.stringify(category);
+      const { response, msg } = await placeService.createPlace({
+        ...info,
+        category: jsonCate,
+        timeFrom: convertToMinutes(timeFrom),
+        timeTo: convertToMinutes(timeTo),
+        time: `${timeFrom} - ${timeTo}`,
+        userId,
       });
+      if (msg !== 'OK' || !response) {
+        return throwError('Can not create place', 500, next);
+      }
+
+      const placeRes = response;
+      const mediaData = await mediaService.createMedia(
+        imageUrls.map((item) => ({
+          url: item,
+          type: MEDIA_TYPE.place,
+          typeId: placeRes.placeId || 'Lỗi',
+        }))
+      );
+
+      const mediaRes = mediaData?.response?.map((item) => item.url);
+
+      if (!mediaRes?.length) {
+        return throwError('Can not create media', 500, next);
+      }
+
+      // return success(res, 200, {
+      //   place: { ...placeRes, media: mediaRes },
+      // });
     } catch (error) {
       const msg = 'Failed at create place controller: ' + error;
       return throwError(msg, 500, next);

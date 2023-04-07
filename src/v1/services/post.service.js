@@ -1,5 +1,6 @@
 const db = require('../databases/models');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
+
 class PostService {
   getAllPost() {
     return new Promise(async (resolve, reject) => {
@@ -125,7 +126,14 @@ class PostService {
         const response = await db.Post.findAll({
           raw: false, //gộp lại k tách ra
           nest: true,
-          where: { catalog },
+          where: Sequelize.where(
+            Sequelize.fn(
+              'JSON_CONTAINS',
+              Sequelize.col('catalog'),
+              JSON.stringify(catalog)
+            ),
+            true
+          ),
           include: [
             //lấy user
             {
