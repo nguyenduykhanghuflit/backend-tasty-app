@@ -110,9 +110,9 @@ class PlaceController {
         return throwError('Can not create media', 500, next);
       }
 
-      // return success(res, 200, {
-      //   place: { ...placeRes, media: mediaRes },
-      // });
+      return success(res, 200, {
+        place: { ...placeRes, media: mediaRes },
+      });
     } catch (error) {
       const msg = 'Failed at create place controller: ' + error;
       return throwError(msg, 500, next);

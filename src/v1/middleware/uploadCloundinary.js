@@ -19,7 +19,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage }).array('images', 20);
 
 // Middleware upload nhiều ảnh lên cloud
-const uploadImages = (req, res, next) => {
+const uploadCloundinary = (req, res, next) => {
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       return res
@@ -33,17 +33,13 @@ const uploadImages = (req, res, next) => {
     Promise.all(
       req.files.map((file) => {
         return new Promise((resolve, reject) => {
-          cloudinary.uploader.upload(
-            file.path,
-            { timeout: 60000 },
-            function (error, result) {
-              if (error) {
-                reject('Cloundinary error: ' + error);
-              } else {
-                resolve(result.url);
-              }
+          cloudinary.uploader.upload(file.path, function (error, result) {
+            if (error) {
+              reject('Cloundinary error: ' + error);
+            } else {
+              resolve(result.url);
             }
-          );
+          });
         });
       })
     )
@@ -59,4 +55,4 @@ const uploadImages = (req, res, next) => {
   });
 };
 
-module.exports = { upload, uploadImages };
+module.exports = { upload, uploadCloundinary };

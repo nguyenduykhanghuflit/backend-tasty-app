@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname); // tên tệp sẽ được lưu trữ trên máy chủ
   },
 });
-const upload = multer({ storage: storage }).array('image', 20);
+const upload = multer({ storage: storage }).array('images', 20);
 
 module.exports = {
   upload,
