@@ -33,13 +33,17 @@ const uploadImages = (req, res, next) => {
     Promise.all(
       req.files.map((file) => {
         return new Promise((resolve, reject) => {
-          cloudinary.uploader.upload(file.path, function (error, result) {
-            if (error) {
-              reject('Cloundinary error: ' + error);
-            } else {
-              resolve(result.url);
+          cloudinary.uploader.upload(
+            file.path,
+            { timeout: 60000 },
+            function (error, result) {
+              if (error) {
+                reject('Cloundinary error: ' + error);
+              } else {
+                resolve(result.url);
+              }
             }
-          });
+          );
         });
       })
     )
