@@ -14,7 +14,7 @@ class PlaceService {
             {
               model: db.User,
               as: 'UserPlace',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
             },
             {
@@ -61,7 +61,7 @@ class PlaceService {
             {
               model: db.User,
               as: 'UserPlace',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
             },
             {
@@ -107,7 +107,7 @@ class PlaceService {
             {
               model: db.User,
               as: 'UserPlace',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
             },
             {
@@ -138,7 +138,7 @@ class PlaceService {
             {
               model: db.User,
               as: 'UserPlace',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
             },
             {

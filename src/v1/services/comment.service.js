@@ -14,16 +14,7 @@ class CommentService {
               model: db.User,
               as: 'UserComment',
               plain: true,
-              attributes: ['fullname', 'username'],
-              include: [
-                {
-                  model: db.Media,
-                  as: 'UserMedia',
-                  attributes: ['url'],
-                  where: { type: 'avatar' },
-                  plain: true,
-                },
-              ],
+              attributes: ['fullname', 'username', 'avatar'],
             },
           ],
         });

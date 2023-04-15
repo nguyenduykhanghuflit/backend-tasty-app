@@ -48,6 +48,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      avatar: {
+        allowNull: true,
+        type: DataTypes.STRING,
+        defaultValue:
+          'https://res.cloudinary.com/dxshs8qrh/image/upload/v1681550908/no_avatar_ajdjmr.webp',
+      },
     },
     {
       sequelize,

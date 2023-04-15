@@ -14,17 +14,8 @@ class PostService {
             {
               model: db.User,
               as: 'UserPost',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
-              include: [
-                {
-                  model: db.Media,
-                  as: 'UserMedia',
-                  where: { type: 'avatar' },
-                  attributes: ['url'],
-                  plain: true,
-                },
-              ],
             },
             //lấy media
             {
@@ -73,17 +64,8 @@ class PostService {
             {
               model: db.User,
               as: 'UserPost',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
-              include: [
-                {
-                  model: db.Media,
-                  as: 'UserMedia',
-                  where: { type: 'avatar' },
-                  attributes: ['url'],
-                  plain: true,
-                },
-              ],
             },
             //lấy media
             {
@@ -139,17 +121,8 @@ class PostService {
             {
               model: db.User,
               as: 'UserPost',
-              attributes: ['fullname', 'username'],
+              attributes: ['fullname', 'username', 'avatar'],
               plain: true,
-              include: [
-                {
-                  model: db.Media,
-                  as: 'UserMedia',
-                  where: { type: 'avatar' },
-                  attributes: ['url'],
-                  plain: true,
-                },
-              ],
             },
             //lấy media
             {
