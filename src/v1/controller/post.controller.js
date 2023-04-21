@@ -21,7 +21,8 @@ class PostController {
         data = data?.response?.filter((item) => {
           const keyword = unidecode(search.toLowerCase());
           const content = unidecode(item.content.toLowerCase());
-          return content.includes(keyword);
+          const title = unidecode(item.title.toLowerCase());
+          return title.includes(keyword) || content.includes(keyword);
         });
 
         data = {
