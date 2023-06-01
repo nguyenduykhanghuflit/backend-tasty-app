@@ -36,7 +36,9 @@ app.use('/static/', express.static(path.join(__dirname, './v1/public/')));
 const initRouter = require('./v1/routes/index.router');
 
 app.use('/api', initRouter);
-
+app.get('/', (req, res) => {
+  res.send('Hello NguyenDuyKhang');
+});
 // Error Handling Middleware
 app.use((req, res, next) => {
   const error = new Error('Not found');
