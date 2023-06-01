@@ -29,7 +29,3 @@ const connectDB = async () => {
 };
 
 module.exports = connectDB;
-
-//https://member5-1.smarterasp.net/cp/cp_screen
-//mydb
-//@Khang123

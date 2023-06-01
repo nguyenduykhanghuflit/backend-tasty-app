@@ -1,6 +1,6 @@
 const commentService = require('../services/comment.service');
 const { success, throwError } = require('../utils/response');
-
+const sendNotifiCation = require('../services/sendnotification.service');
 class CommentController {
   async getComment(req, res, next) {
     try {
@@ -34,6 +34,17 @@ class CommentController {
     } catch (error) {
       const msg = 'Failed at create comment controller: ' + error;
       return throwError(msg, 500, next);
+    }
+  }
+
+  async userLikePost(req, res, next) {
+    try {
+      sendNotifiCation.like();
+      console.log('::oke');
+      res.send('đã send');
+    } catch (error) {
+      console.log('::error');
+      res.send('send lỗi');
     }
   }
 }
