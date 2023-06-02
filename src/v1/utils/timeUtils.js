@@ -1,9 +1,11 @@
 module.exports = {
   // cần check lại data type
   isValidTime: (value) => {
-    const time = new Date(`01/01/1970 ${value}`);
+    console.log(value);
+    const time = new Date(`01/01/1970 ${'06:30'}`);
     const miliseconds = time.getTime();
-    return miliseconds >= 0 && miliseconds <= 86399999;
+    console.log(time);
+    console.log(miliseconds >= 0 && miliseconds <= 86399999);
   },
   convertToMinutes: (time) => {
     const [hour, minute] = time.split(':');

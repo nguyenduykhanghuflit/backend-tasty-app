@@ -46,7 +46,8 @@ class PlaceController {
       //check media
       const imageUrls = req.imageUrls;
       if (!imageUrls || imageUrls.length <= 0) {
-        return throwError('Server error: Can not upload media', 500, next);
+        //  return throwError('Server error: Can not upload media', 500, next);
+        return throwError('Vui lòng chọn hình ảnh', 500, next);
       }
 
       //check data require
@@ -67,7 +68,8 @@ class PlaceController {
       const missingFields = requiredFields.filter((field) => !info[field]);
       if (missingFields.length > 0) {
         return throwError(
-          `Missing data: ${missingFields.toString()}`,
+          'Vui lòng nhập đủ thông tin',
+          // `Missing data: ${missingFields.toString()}`,
           400,
           next
         );
@@ -75,13 +77,20 @@ class PlaceController {
 
       //check category and time
       let { category, timeFrom, timeTo } = info;
-      if (!Array.isArray(category)) category = [category];
+      console.log(category);
+      const dataCate = [];
+      category.forEach((element) => {
+        dataCate.push(Object.keys(element)[0]);
+      });
+      category = dataCate;
+      console.log(category);
+      // if (!Array.isArray(category)) category = [category];
       if (!category || !isSubarray(category, PLACE_TYPE))
         return throwError('Catalog invalid', 400, next);
 
-      if (!isValidTime(timeFrom) || !isValidTime(timeTo))
-        return throwError('Time invalid', 400, next);
-
+      // if (!isValidTime(timeFrom) || !isValidTime(timeTo))
+      //   return throwError('Time invalid', 400, next);
+      console.log(convertToMinutes(timeFrom));
       const jsonCate = JSON.stringify(category);
       const { response, msg } = await placeService.createPlace({
         ...info,

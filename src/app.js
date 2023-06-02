@@ -30,14 +30,18 @@ app.use(
   })
 );
 const path = require('path');
-app.use('/static/', express.static(path.join(__dirname, './v1/public/')));
+app.use(
+  '/static/',
+  express.static(path.join(__dirname, './v1/public/images/'))
+);
 
+app.use(express.static(__dirname));
 //router
 const initRouter = require('./v1/routes/index.router');
 
 app.use('/api', initRouter);
 app.get('/', (req, res) => {
-  res.send('Hello NguyenDuyKhang');
+  res.sendFile(__dirname + '/v1/public/default_page/index.html');
 });
 // Error Handling Middleware
 app.use((req, res, next) => {

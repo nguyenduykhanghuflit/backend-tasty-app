@@ -148,6 +148,7 @@ class PostService {
               ],
             },
           ],
+          order: [['createdAt', 'DESC']],
         });
         return resolve({
           msg: response ? 'OK' : 'Post empty',
