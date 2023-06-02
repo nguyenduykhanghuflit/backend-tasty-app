@@ -3,10 +3,11 @@ const router = app.Router();
 const UserController = require('../controller/user.controller');
 const AuthMiddleware = require('../middleware/auth');
 
+router.get('/user/info', AuthMiddleware.Logged, UserController.getUserInfo);
 router.post(
-  '/get-info-user',
+  '/user/update',
   AuthMiddleware.Logged,
-  UserController.getUserInfo
+  UserController.updateUserInfo
 );
 router.get('/get-all-user', UserController.getAllUser);
 

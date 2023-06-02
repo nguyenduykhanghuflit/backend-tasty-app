@@ -1,14 +1,35 @@
-const multer = require('multer');
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'src/v1/public/'); // thư mục lưu trữ tệp được tải lên
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); // tên tệp sẽ được lưu trữ trên máy chủ
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+const cloudinary = require('cloudinary').v2;
+
+const { your_cloud_name, api_key, api_secret } = process.env;
+// Thiết lập cloudinary
+cloudinary.config({
+  cloud_name: your_cloud_name,
+  api_key: api_key,
+  api_secret: api_secret,
+});
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'reviewapp',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
   },
 });
-const upload = multer({ storage: storage }).array('images', 20);
+
+// define the function to upload image to cloudinary
+const uploadImageToCloudinary = async (imageFile) => {
+  try {
+    // upload the image to cloudinary
+    const result = await cloudinary.uploader.upload(imageFile, storage);
+    // return the public URL of the uploaded image
+    return result.secure_url;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to upload image to cloudinary');
+  }
+};
 
 module.exports = {
-  upload,
+  uploadImageToCloudinary,
 };

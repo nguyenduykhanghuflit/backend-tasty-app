@@ -1,8 +1,16 @@
 const userService = require('../services/user.service');
-const mediaService = require('../services/media.service');
 const { success, throwError } = require('../utils/response');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const { uploadImageToCloudinary } = require('../utils/upload');
+const multer = require('multer');
+// configure multer to specify the destination folder and filename
+const storage = multer.diskStorage({
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+// create the multer middleware to handle file upload
+const upload = multer({ storage: storage }).single('avt');
 class UserController {
   // get user for dev
   //*todo later
@@ -17,15 +25,10 @@ class UserController {
     }
   }
 
-  //*todo later
   async getUserInfo(req, res, next) {
     try {
       const userId = req.userId;
       const data = await userService.getUserInfo(userId);
-      // const media = await mediaService.getMedia('avatar', userId);
-      // if (media) {
-      //   data.response.media = media?.response;
-      // }
       return success(res, 200, data);
     } catch (ex) {
       const msg = 'Failed at getUserInfo controller: ' + ex;
@@ -33,7 +36,31 @@ class UserController {
     }
   }
 
-  // get all post of user
-  //get all place of user
+  async updateUserInfo(req, res, next) {
+    upload(req, res, async function (err) {
+      if (err) {
+        console.log(err);
+      }
+      try {
+        let url = null;
+        if (req.file?.path) {
+          const result = await uploadImageToCloudinary(req.file.path);
+          url = result;
+        }
+
+        const userId = req.userId;
+        const info = req.body;
+        if (url) info.avatar = url;
+        const data = await userService.userUpdate(info, userId);
+        if (data.msg === 'Password Invalid') {
+          return throwError(data.msg, 400, next);
+        }
+        return success(res, 200, data);
+      } catch (ex) {
+        const msg = 'Failed at getUserInfo controller: ' + ex;
+        return throwError(msg, 500, next);
+      }
+    });
+  }
 }
 module.exports = new UserController();

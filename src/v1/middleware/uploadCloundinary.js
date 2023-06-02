@@ -31,7 +31,7 @@ const uploadCloundinary = (req, res, next) => {
 
     // Truy xuất thông tin ảnh trên Cloudinary và lấy đường dẫn URL
     Promise.all(
-      req.files.map((file) => {
+      req.files?.map((file) => {
         return new Promise((resolve, reject) => {
           cloudinary.uploader.upload(file.path, function (error, result) {
             if (error) {

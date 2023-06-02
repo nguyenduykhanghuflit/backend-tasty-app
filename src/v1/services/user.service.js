@@ -43,8 +43,7 @@ class UserService {
       }
     });
   }
-  //   phải đi qua midleware login
-  //*todo later
+
   getUserInfo(userId) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -52,19 +51,7 @@ class UserService {
           raw: false,
           nest: true,
           where: { userId },
-          include: [
-            {
-              model: db.Place,
-              as: 'UserPlace',
-              plain: true,
-            },
-            {
-              model: db.Media,
-              as: 'UserMedia',
-              where: { type: 'avatar' },
-              plain: true,
-            },
-          ],
+          attributes: { exclude: ['password'] },
         });
         return resolve({
           msg: response ? 'OK' : 'User invalid',
@@ -129,6 +116,55 @@ class UserService {
     });
   }
 
+  userUpdate(info, userId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const userData = await db.User.findOne({
+          raw: true,
+          nest: true,
+          where: { userId },
+        });
+
+        //check password
+        if (info.password) {
+          if (!info.repassword) {
+            return resolve({
+              msg: 'Password Invalid',
+              response: null,
+            });
+          }
+          const isPasswordValid = await bcrypt.compare(
+            info.repassword,
+            userData.password
+          );
+
+          if (!isPasswordValid) {
+            return resolve({
+              msg: 'Password Invalid',
+              response: null,
+            });
+          }
+          info.password = await bcrypt.hash(info.password, 10);
+        }
+
+        await db.User.update(
+          { ...info },
+          {
+            where: {
+              userId,
+            },
+          }
+        );
+
+        return resolve({
+          msg: 'OK',
+          response: 'Success',
+        });
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
   userRegister(info) {
     return new Promise(async (resolve, reject) => {
       try {
