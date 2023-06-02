@@ -174,5 +174,59 @@ class PostService {
       }
     });
   }
+
+  getPostByUser(userId) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await db.Post.findAll({
+          raw: false, //gộp lại k tách ra
+          nest: true,
+          where: {
+            userId,
+          },
+          include: [
+            //lấy user
+            {
+              model: db.User,
+              as: 'UserPost',
+              attributes: ['fullname', 'username', 'avatar'],
+              plain: true,
+            },
+            //lấy media
+            {
+              model: db.Media,
+              as: 'PostMedia',
+              where: { type: 'post' },
+              plain: true,
+              attributes: ['url'],
+            },
+            //lấy place
+            {
+              model: db.Place,
+              as: 'PlacePost',
+              plain: true,
+              include: [
+                {
+                  model: db.Media,
+                  as: 'PlaceMedia',
+                  attributes: ['url'],
+                  where: { type: 'place' },
+                  plain: true,
+                },
+              ],
+            },
+          ],
+          order: [['createdAt', 'DESC']],
+        });
+        return resolve({
+          msg: response ? 'OK' : 'Post empty',
+          response,
+        });
+      } catch (error) {
+        console.log('ở đây');
+        return reject(error);
+      }
+    });
+  }
 }
 module.exports = new PostService();

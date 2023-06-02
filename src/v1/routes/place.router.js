@@ -5,6 +5,11 @@ const AuthMiddleware = require('../middleware/auth');
 const uploadImages = require('../middleware/uploadImage');
 const { uploadCloundinary } = require('../middleware/uploadCloundinary');
 router.get('/place', PlaceController.getPlace);
+router.get(
+  '/place/user',
+  AuthMiddleware.Logged,
+  PlaceController.getPlaceByUser
+);
 router.post(
   '/place',
   AuthMiddleware.Logged,

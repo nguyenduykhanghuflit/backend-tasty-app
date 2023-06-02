@@ -11,5 +11,6 @@ router.post(
   PostController.createPost
 );
 router.get('/post', PostController.getPost);
+router.get('/post/user', AuthMiddleware.Logged, PostController.getPostByUser);
 
 module.exports = router;

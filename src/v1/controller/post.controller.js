@@ -96,5 +96,23 @@ class PostController {
       return throwError(msg, 500, next);
     }
   }
+
+  async getPostByUser(req, res, next) {
+    try {
+      const userId = req.userId;
+
+      if (!userId) return throwError('Unauthorized', 401, next);
+      let data = await postService.getPostByUser(userId);
+
+      data = {
+        msg: 'Ok',
+        response: data,
+      };
+      return success(res, 200, data);
+    } catch (ex) {
+      const msg = 'Failed at get post controller: ' + ex;
+      return throwError(msg, 500, next);
+    }
+  }
 }
 module.exports = new PostController();

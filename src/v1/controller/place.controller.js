@@ -128,6 +128,22 @@ class PlaceController {
     }
   }
 
+  async getPlaceByUser(req, res, next) {
+    try {
+      //check login
+      const userId = req.userId;
+      if (!userId) return throwError('Unauthorized', 401, next);
+      let data = await placeService.getPlaceByUser(userId);
+      data = {
+        msg: 'Ok',
+        response: data,
+      };
+      return success(res, 200, data);
+    } catch (ex) {
+      const msg = 'Failed at place controller: ' + ex;
+      return throwError(msg, 500, next);
+    }
+  }
   //get place detail + media +user
 }
 module.exports = new PlaceController();
