@@ -104,10 +104,6 @@ class PostController {
       if (!userId) return throwError('Unauthorized', 401, next);
       let data = await postService.getPostByUser(userId);
 
-      data = {
-        msg: 'Ok',
-        response: data,
-      };
       return success(res, 200, data);
     } catch (ex) {
       const msg = 'Failed at get post controller: ' + ex;

@@ -134,10 +134,6 @@ class PlaceController {
       const userId = req.userId;
       if (!userId) return throwError('Unauthorized', 401, next);
       let data = await placeService.getPlaceByUser(userId);
-      data = {
-        msg: 'Ok',
-        response: data,
-      };
       return success(res, 200, data);
     } catch (ex) {
       const msg = 'Failed at place controller: ' + ex;
