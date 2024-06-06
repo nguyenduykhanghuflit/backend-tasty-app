@@ -10,9 +10,9 @@ app.use(helmet());
 
 const morgan = require('morgan');
 app.use(
-  morgan(
-    ':method :url :status :res[content-length] - :response-time ms  :date[clf]'
-  )
+   morgan(
+      ':method :url :status :res[content-length] - :response-time ms  :date[clf]'
+   )
 );
 
 const cors = require('cors');
@@ -25,14 +25,14 @@ app.use(compression());
 // add body-parser
 app.use(express.json());
 app.use(
-  express.urlencoded({
-    extended: true,
-  })
+   express.urlencoded({
+      extended: true,
+   })
 );
 const path = require('path');
 app.use(
-  '/static/',
-  express.static(path.join(__dirname, './v1/public/images/'))
+   '/static/',
+   express.static(path.join(__dirname, './v1/public/images/'))
 );
 
 app.use(express.static(__dirname));
@@ -41,23 +41,27 @@ const initRouter = require('./v1/routes/index.router');
 
 app.use('/api', initRouter);
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/v1/public/default_page/index.html');
+   res.send({
+      msg: 'Server running, Developed by KhangNguyen',
+      code: 200,
+      success: true,
+   });
 });
 // Error Handling Middleware
 app.use((req, res, next) => {
-  const error = new Error('Not found');
-  error.status = 404;
-  next(error);
+   const error = new Error('Not found');
+   error.status = 404;
+   next(error);
 });
 
 // Error handler middleware
 app.use((error, req, res, next) => {
-  res.status(error.status || 500).send({
-    error: {
-      status: error.status || 500,
-      message: error.message || 'Internal Server Error',
-    },
-  });
+   res.status(error.status || 500).send({
+      error: {
+         status: error.status || 500,
+         message: error.message || 'Internal Server Error',
+      },
+   });
 });
 
 module.exports = app;
